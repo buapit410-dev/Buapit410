@@ -24,6 +24,19 @@
             line-height: 1.6;
         }
 
+        /* กิมมิก 1: DNA Progress Bar ด้านบนสุด */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 6px;
+            background: linear-gradient(to right, var(--nps-pink), var(--nps-blue));
+            z-index: 1001;
+            border-radius: 0 5px 5px 0;
+            box-shadow: 0 0 10px var(--nps-pink);
+        }
+
         nav {
             display: flex;
             justify-content: space-between;
@@ -36,21 +49,49 @@
             z-index: 1000;
         }
 
-        .school-logo { height: 45px; vertical-align: middle; }
+        .logo-area { display: flex; align-items: center; }
+        .school-logo { height: 45px; transition: 0.3s; }
+        .school-logo:hover { transform: scale(1.1) rotate(5deg); }
         .room-id { font-weight: 600; margin-left: 10px; color: var(--nps-blue); }
 
+        .nav-buttons { display: flex; align-items: center; gap: 10px; }
+
+        /* ปุ่มเล่นเพลง */
         .play-btn {
             background: var(--nps-pink);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 15px;
             border-radius: 25px;
             cursor: pointer;
             transition: 0.3s;
             font-family: 'Kanit', sans-serif;
+            font-size: 14px;
         }
 
-        .play-btn:hover { transform: scale(1.05); background: #ff9fb1; }
+        /* กิมมิก 2: ปุ่ม Instagram แบบ Glassmorphism */
+        .ig-btn {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid var(--nps-pink);
+            padding: 6px 12px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: var(--dark-text);
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .ig-btn:hover {
+            background: var(--nps-pink);
+            color: white;
+            box-shadow: 0 0 15px var(--nps-pink);
+            transform: translateY(-2px);
+        }
+
+        .ig-icon { width: 18px; height: 18px; margin-right: 6px; }
 
         .hero {
             background: linear-gradient(135deg, var(--nps-pink) 0%, var(--nps-blue) 100%);
@@ -62,10 +103,10 @@
             color: white;
         }
 
-        .hero h1 { font-size: 2.5rem; }
+        .hero h1 { font-size: 2.5rem; text-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
 
         main { padding: 40px 5%; }
-        .title { text-align: center; margin-bottom: 30px; }
+        .title { text-align: center; margin-bottom: 30px; font-weight: 600; }
 
         .advisor-grid {
             display: flex;
@@ -82,7 +123,9 @@
             width: 220px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             border-bottom: 5px solid var(--nps-blue);
+            transition: 0.3s;
         }
+        .advisor-card:hover { transform: translateY(-10px); }
 
         .table-box {
             background: white;
@@ -99,16 +142,22 @@
             gap: 12px;
         }
 
+        /* กิมมิก 3: การ์ดสมาชิกแบบเรืองแสงเมื่อ Hover */
         .member-card {
             background: white;
             padding: 15px;
             text-align: center;
             border-radius: 10px;
             border: 1px solid #eee;
-            transition: 0.3s;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .member-card:hover { border-color: var(--nps-pink); background: #fff5f7; }
+        .member-card:hover { 
+            border-color: var(--nps-pink); 
+            background: #fff;
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 0 5px 15px rgba(255, 182, 193, 0.4);
+        }
 
         footer {
             background: #333;
@@ -121,6 +170,8 @@
 </head>
 <body>
 
+    <div id="scroll-progress"></div>
+
     <audio id="bgMusic" loop>
         <source src="music.mp3" type="audio/mpeg">
     </audio>
@@ -130,7 +181,13 @@
             <img src="logo.png" alt="N.P." class="school-logo">
             <span class="room-id">ROOM 410</span>
         </div>
-        <button id="musicBtn" class="play-btn">🎵 เล่นเพลง (นับหนึ่ง)</button>
+        <div class="nav-buttons">
+            <a href="https://www.instagram.com/buapit_410?igsh=NWxobG1ndTl2Zm5o" target="_blank" class="ig-btn">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="IG" class="ig-icon">
+                <spanA Instagram </span>
+            </a>
+            <button id="musicBtn" class="play-btn">🎵 เล่นเพลง</button>
+        </div>
     </nav>
 
     <header class="hero">
@@ -174,7 +231,7 @@
     <script>
         /* --- JAVASCRIPT SECTION --- */
         
-        // สร้างการ์ดเพื่อน 37 คน
+        // 1. สร้างการ์ดเพื่อน 37 คน
         const grid = document.getElementById('memberGrid');
         for (let i = 1; i <= 37; i++) {
             const card = document.createElement('div');
@@ -183,7 +240,7 @@
             grid.appendChild(card);
         }
 
-        // ระบบเล่นเพลง
+        // 2. ระบบควบคุมเพลง
         const music = document.getElementById('bgMusic');
         const btn = document.getElementById('musicBtn');
 
@@ -193,10 +250,17 @@
                 btn.innerHTML = "⏸️ หยุดเพลง";
             } else {
                 music.pause();
-                btn.innerHTML = "🎵 เล่นเพลง (นับหนึ่ง)";
+                btn.innerHTML = "🎵 เล่นเพลง";
             }
         });
+
+        // 3. ระบบ DNA Progress Bar (Scroll Tracking)
+        window.onscroll = function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("scroll-progress").style.width = scrolled + "%";
+        };
     </script>
 </body>
-  </html>
-  
+</html>
