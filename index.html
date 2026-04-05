@@ -16,175 +16,117 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Kanit', sans-serif; background-color: #fcfcfc; color: var(--dark-text); overflow-x: hidden; }
 
-        body {
-            font-family: 'Kanit', sans-serif;
-            background-color: #fcfcfc;
-            color: var(--dark-text);
-            line-height: 1.6;
-        }
-
-        /* กิมมิก 1: DNA Progress Bar ด้านบนสุด */
+        /* กิมมิก DNA Progress Bar */
         #scroll-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 6px;
+            position: fixed; top: 0; left: 0; width: 0%; height: 6px;
             background: linear-gradient(to right, var(--nps-pink), var(--nps-blue));
-            z-index: 1001;
+            z-index: 1100; box-shadow: 0 0 10px var(--nps-pink);
             border-radius: 0 5px 5px 0;
-            box-shadow: 0 0 10px var(--nps-pink);
         }
 
         nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 5%;
-            background: var(--white);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 5%; background: var(--white); box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 1000;
         }
 
         .logo-area { display: flex; align-items: center; }
-        .school-logo { height: 45px; transition: 0.3s; }
+        .school-logo { height: 45px; transition: 0.3s; cursor: pointer; }
         .school-logo:hover { transform: scale(1.1) rotate(5deg); }
         .room-id { font-weight: 600; margin-left: 10px; color: var(--nps-blue); }
 
         .nav-buttons { display: flex; align-items: center; gap: 10px; }
 
-        /* ปุ่มเล่นเพลง */
-        .play-btn {
-            background: var(--nps-pink);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-family: 'Kanit', sans-serif;
-            font-size: 14px;
+        /* ปุ่มต่างๆ */
+        .play-btn, .ig-btn {
+            border: none; padding: 8px 15px; border-radius: 25px; cursor: pointer;
+            transition: 0.3s; font-family: 'Kanit', sans-serif; font-size: 14px; text-decoration: none;
         }
-
-        /* กิมมิก 2: ปุ่ม Instagram แบบ Glassmorphism */
-        .ig-btn {
-            display: inline-flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.8);
-            border: 2px solid var(--nps-pink);
-            padding: 6px 12px;
-            border-radius: 50px;
-            text-decoration: none;
-            color: var(--dark-text);
-            font-size: 14px;
-            font-weight: 500;
-            transition: 0.3s;
-        }
-
-        .ig-btn:hover {
-            background: var(--nps-pink);
-            color: white;
-            box-shadow: 0 0 15px var(--nps-pink);
-            transform: translateY(-2px);
-        }
-
-        .ig-icon { width: 18px; height: 18px; margin-right: 6px; }
+        .play-btn { background: var(--nps-pink); color: white; }
+        .ig-btn { background: white; border: 2px solid var(--nps-pink); color: var(--dark-text); display: flex; align-items: center; }
+        .ig-btn:hover { background: var(--nps-pink); color: white; transform: translateY(-2px); box-shadow: 0 5px 10px rgba(255,182,193,0.3); }
 
         .hero {
-            background: linear-gradient(135deg, var(--nps-pink) 0%, var(--nps-blue) 100%);
-            height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
+            background: linear-gradient(135deg, var(--nps-pink), var(--nps-blue));
+            height: 250px; display: flex; align-items: center; justify-content: center;
+            text-align: center; color: white; margin-bottom: 20px;
         }
-
         .hero h1 { font-size: 2.5rem; text-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
 
-        main { padding: 40px 5%; }
-        .title { text-align: center; margin-bottom: 30px; font-weight: 600; }
+        main { padding: 0 5%; }
+        .title { text-align: center; margin: 40px 0 20px; font-weight: 600; color: var(--nps-pink); }
 
-        .advisor-grid {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
+        /* ระบบ Card สำหรับทุกคน */
+        .grid-container {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 20px; justify-items: center; margin-bottom: 50px;
         }
 
-        .advisor-card {
-            background: white;
-            padding: 20px;
-            border-radius: 20px;
-            text-align: center;
-            width: 220px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            border-bottom: 5px solid var(--nps-blue);
-            transition: 0.3s;
+        .card {
+            background: white; width: 140px; padding: 15px; border-radius: 20px;
+            text-align: center; border: 2px solid #f0f0f0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer; position: relative;
         }
-        .advisor-card:hover { transform: translateY(-10px); }
+        .card:hover { 
+            transform: translateY(-10px) rotate(2deg);
+            border-color: var(--nps-pink);
+            box-shadow: 0 10px 20px rgba(255, 182, 193, 0.3);
+        }
 
+        .card-img {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: #f9f9f9; margin: 0 auto 10px; object-fit: cover;
+            border: 3px solid var(--nps-blue);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .card-name { font-size: 14px; font-weight: 600; color: var(--dark-text); }
+        .card-sub { font-size: 11px; color: #aaa; }
+
+        /* ตารางเรียนแบบเดิม */
         .table-box {
-            background: white;
-            padding: 40px;
-            text-align: center;
-            border-radius: 20px;
-            border: 2px dashed var(--nps-blue);
-            margin: 40px 0;
+            background: white; padding: 40px; text-align: center;
+            border-radius: 20px; border: 2px dashed var(--nps-blue); margin: 40px 0;
         }
 
-        .member-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 12px;
+        /* Modal (หน้าต่างเด้งบอกรายละเอียด) */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: none;
+            justify-content: center; align-items: center; z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: white; padding: 30px; border-radius: 30px;
+            width: 90%; max-width: 400px; text-align: center;
+            position: relative; animation: pop 0.3s ease-out;
+        }
+        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .close-modal {
+            position: absolute; top: 15px; right: 20px; font-size: 25px;
+            cursor: pointer; color: #ccc;
         }
 
-        /* กิมมิก 3: การ์ดสมาชิกแบบเรืองแสงเมื่อ Hover */
-        .member-card {
-            background: white;
-            padding: 15px;
-            text-align: center;
-            border-radius: 10px;
-            border: 1px solid #eee;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .member-card:hover { 
-            border-color: var(--nps-pink); 
-            background: #fff;
-            transform: scale(1.1) rotate(2deg);
-            box-shadow: 0 5px 15px rgba(255, 182, 193, 0.4);
-        }
-
-        footer {
-            background: #333;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-        }
+        footer { background: #333; color: white; text-align: center; padding: 30px; margin-top: 50px; }
     </style>
 </head>
 <body>
 
     <div id="scroll-progress"></div>
 
-    <audio id="bgMusic" loop>
-        <source src="music.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="bgMusic" loop><source src="music.mp3" type="audio/mpeg"></audio>
 
     <nav>
         <div class="logo-area">
             <img src="logo.png" alt="N.P." class="school-logo">
-            <span class="room-id">ROOM 410</span>
+            <span class="room-id">BUAPIT 410</span>
         </div>
         <div class="nav-buttons">
             <a href="https://www.instagram.com/buapit_410?igsh=NWxobG1ndTl2Zm5o" target="_blank" class="ig-btn">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="IG" class="ig-icon">
-                <spanA Instagram </span>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" width="15" style="margin-right:5px;"> IG ห้อง
             </a>
             <button id="musicBtn" class="play-btn">🎵 เล่นเพลง</button>
         </div>
@@ -193,69 +135,105 @@
     <header class="hero">
         <div>
             <h1>WELCOME TO 410</h1>
-            <p>วิทย์ - คณิต | โรงเรียนหนองบัวพิทยาคาร</p>
+            <p>SCIENCE-MATH | NONG BUA PIT</p>
         </div>
     </header>
 
     <main>
-        <section>
-            <h2 class="title">ครูที่ปรึกษา</h2>
-            <div class="advisor-grid">
-                <div class="advisor-card">
-                    <div style="font-size:40px">👨‍🏫</div>
-                    <h3>ครูปริยนนท์</h3>
-                </div>
-                <div class="advisor-card">
-                    <div style="font-size:40px">👨‍🏫</div>
-                    <h3>ครูชัยยุทธ</h3>
-                </div>
+        <h2 class="title">ครูที่ปรึกษา</h2>
+        <div class="grid-container" id="advisorGrid">
+            <div class="card" onclick="showDetail('ครูปริยนนท์', 'ที่ปรึกษาคนที่ 1', 'teacher1.jpg', 'รอเว็บไซต์อัพเดตข้อมูล')">
+                <img src="teacher1.jpg" class="card-img" onerror="this.src='https://via.placeholder.com/80/87CEFA/ffffff?text=Teacher'">
+                <div class="card-name">ครูปริยนนท์</div>
+                <div class="card-sub">Advisor</div>
             </div>
-        </section>
+            <div class="card" onclick="showDetail('ครูชัยยุทธ', 'ที่ปรึกษาคนที่ 2', 'teacher2.jpg', 'รอเว็บไซต์อัพเดตข้อมูล')">
+                <img src="teacher2.jpg" class="card-img" onerror="this.src='https://via.placeholder.com/80/87CEFA/ffffff?text=Teacher'">
+                <div class="card-name">ครูชัยยุทธ</div>
+                <div class="card-sub">Advisor</div>
+            </div>
+        </div>
 
         <section class="table-box">
-            <h2 class="title">ตารางเรียน</h2>
-            <p>📍 รออัปเดตข้อมูลหลังเปิดเทอม...</p>
+            <h2 class="title" style="margin-top:0;">ตารางเรียน</h2>
+            <p>📍 รอฝ่ายวิชาการประกาศตารางเรียน</p>
         </section>
 
-        <section>
-            <h2 class="title">สมาชิกในห้อง (37 คน)</h2>
-            <div class="member-grid" id="memberGrid">
-                </div>
-        </section>
+        <h2 class="title">สมาชิกในห้อง (37 คน)</h2>
+        <div class="grid-container" id="memberGrid">
+            </div>
     </main>
 
-    <footer>
-        <p>© 2026 Class 410 หนองบัวพิทยาคาร</p>
-    </footer>
+    <div class="modal" id="myModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <img id="modalImg" src="" style="width:120px; height:120px; border-radius:50%; margin-bottom:15px; border:4px solid var(--nps-pink); object-fit:cover;">
+            <h2 id="modalName">ชื่อสมาชิก</h2>
+            <p id="modalPos" style="color:var(--nps-blue); font-weight:bold; margin-bottom:10px;">ตำแหน่ง/เลขที่</p>
+            <p id="modalDesc" style="color:#666;">รายละเอียด...</p>
+        </div>
+    </div>
+
+    <footer><p>© 2026 Class 410 หนองบัวพิทยาคาร</p></footer>
 
     <script>
         /* --- JAVASCRIPT SECTION --- */
-        
-        // 1. สร้างการ์ดเพื่อน 37 คน
-        const grid = document.getElementById('memberGrid');
+
+        // 1. สร้างการ์ดนักเรียน 1-37
+        const mGrid = document.getElementById('memberGrid');
         for (let i = 1; i <= 37; i++) {
-            const card = document.createElement('div');
-            card.className = 'member-card';
-            card.innerHTML = `<div style="color:var(--nps-blue); font-weight:bold;">#${i}</div><small>Member</small>`;
-            grid.appendChild(card);
+            mGrid.innerHTML += `
+                <div class="card" onclick="showStudentDetail(${i})">
+                    <div class="card-img" style="font-weight:bold; color:#ccc; font-size:24px;">#${i}</div>
+                    <div class="card-name">Student No.${i}</div>
+                    <div class="card-sub">Member</div>
+                </div>
+            `;
         }
 
-        // 2. ระบบควบคุมเพลง
+        // 2. ฟังก์ชันแสดงรายละเอียด
+        function showDetail(name, pos, img, desc) {
+            document.getElementById('modalName').innerText = name;
+            document.getElementById('modalPos').innerText = pos;
+            document.getElementById('modalDesc').innerText = desc;
+            
+            const mImg = document.getElementById('modalImg');
+            // ถ้าไม่มีรูป ให้ใช้รูป Placeholder สีฟ้า
+            mImg.src = img ? img : 'https://via.placeholder.com/120/87CEFA/ffffff?text=410';
+            
+            document.getElementById('myModal').style.display = 'flex';
+        }
+
+        // 3. ฟังก์ชันพิเศษสำหรับนักเรียน (ตามที่แกต้องการ)
+        function showStudentDetail(number) {
+            showDetail(
+                `นักเรียนเลขที่ ${number}`, 
+                "สมาชิกห้อง 410", 
+                "", 
+                "รอการจัดเลขที่จากทางฝ่ายวิชาการโรงเรียน🪪"
+            );
+        }
+
+        // 4. ระบบเปิด-ปิด Modal
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('myModal');
+            if (event.target == modal) closeModal();
+        }
+
+        // 5. ระบบเพลง
         const music = document.getElementById('bgMusic');
         const btn = document.getElementById('musicBtn');
+        btn.onclick = () => {
+            if (music.paused) { music.play(); btn.innerText = "⏸️ หยุดเพลง"; }
+            else { music.pause(); btn.innerText = "🎵 เล่นเพลง"; }
+        };
 
-        btn.addEventListener('click', () => {
-            if (music.paused) {
-                music.play();
-                btn.innerHTML = "⏸️ หยุดเพลง";
-            } else {
-                music.pause();
-                btn.innerHTML = "🎵 เล่นเพลง";
-            }
-        });
-
-        // 3. ระบบ DNA Progress Bar (Scroll Tracking)
-        window.onscroll = function() {
+        // 6. DNA Progress Bar
+        window.onscroll = () => {
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             const scrolled = (winScroll / height) * 100;
