@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ห้อง 410 | หนองบัวพิทยาคาร</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS SECTION --- */
+        :root {
+            --nps-pink: #FFB6C1;
+            --nps-blue: #87CEFA;
+            --dark-text: #2c3e50;
+            --white: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: #fcfcfc;
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background: var(--white);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .school-logo { height: 45px; vertical-align: middle; }
+        .room-id { font-weight: 600; margin-left: 10px; color: var(--nps-blue); }
+
+        .play-btn {
+            background: var(--nps-pink);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        .play-btn:hover { transform: scale(1.05); background: #ff9fb1; }
+
+        .hero {
+            background: linear-gradient(135deg, var(--nps-pink) 0%, var(--nps-blue) 100%);
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 { font-size: 2.5rem; }
+
+        main { padding: 40px 5%; }
+        .title { text-align: center; margin-bottom: 30px; }
+
+        .advisor-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .advisor-card {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            width: 220px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-bottom: 5px solid var(--nps-blue);
+        }
+
+        .table-box {
+            background: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 20px;
+            border: 2px dashed var(--nps-blue);
+            margin: 40px 0;
+        }
+
+        .member-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+        }
+
+        .member-card {
+            background: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            transition: 0.3s;
+        }
+
+        .member-card:hover { border-color: var(--nps-pink); background: #fff5f7; }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <nav>
+        <div class="logo-area">
+            <img src="logo.png" alt="N.P." class="school-logo">
+            <span class="room-id">ROOM 410</span>
+        </div>
+        <button id="musicBtn" class="play-btn">🎵 เล่นเพลง (นับหนึ่ง)</button>
+    </nav>
+
+    <header class="hero">
+        <div>
+            <h1>WELCOME TO 410</h1>
+            <p>วิทย์ - คณิต | โรงเรียนหนองบัวพิทยาคาร</p>
+        </div>
+    </header>
+
+    <main>
+        <section>
+            <h2 class="title">ครูที่ปรึกษา</h2>
+            <div class="advisor-grid">
+                <div class="advisor-card">
+                    <div style="font-size:40px">👨‍🏫</div>
+                    <h3>ครูปริยนนท์</h3>
+                </div>
+                <div class="advisor-card">
+                    <div style="font-size:40px">👨‍🏫</div>
+                    <h3>ครูชัยยุทธ</h3>
+                </div>
+            </div>
+        </section>
+
+        <section class="table-box">
+            <h2 class="title">ตารางเรียน</h2>
+            <p>📍 รออัปเดตข้อมูลหลังเปิดเทอม...</p>
+        </section>
+
+        <section>
+            <h2 class="title">สมาชิกในห้อง (37 คน)</h2>
+            <div class="member-grid" id="memberGrid">
+                </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2026 Class 410 หนองบัวพิทยาคาร</p>
+    </footer>
+
+    <script>
+        /* --- JAVASCRIPT SECTION --- */
+        
+        // สร้างการ์ดเพื่อน 37 คน
+        const grid = document.getElementById('memberGrid');
+        for (let i = 1; i <= 37; i++) {
+            const card = document.createElement('div');
+            card.className = 'member-card';
+            card.innerHTML = `<div style="color:var(--nps-blue); font-weight:bold;">#${i}</div><small>Member</small>`;
+            grid.appendChild(card);
+        }
+
+        // ระบบเล่นเพลง
+        const music = document.getElementById('bgMusic');
+        const btn = document.getElementById('musicBtn');
+
+        btn.addEventListener('click', () => {
+            if (music.paused) {
+                music.play();
+                btn.innerHTML = "⏸️ หยุดเพลง";
+            } else {
+                music.pause();
+                btn.innerHTML = "🎵 เล่นเพลง (นับหนึ่ง)";
+            }
+        });
+    </script>
+</body>
+  </html>
+  
