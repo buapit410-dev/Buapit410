@@ -1,6 +1,6 @@
-// --- 1. ส่วนของข้อมูลโพสต์ (แกมาแก้/เพิ่ม ตรงนี้ได้ตลอด) ---
+
 const activities = [
-        // --- โพสต์ที่ 2 (โพสต์ใหม่จะขึ้นก่อนอันแรก) ---
+
     {
         title: "ปฐมนิเทศ ชั้นมัธยมศึกษาปีที่4",
         date: "8 พฤษภาคม 2569 ภาคบ่าย ",
@@ -17,11 +17,10 @@ const activities = [
     }
 ];
 
-// --- 2. ส่วนของคำสั่งให้มันไปโชว์บนหน้าเว็บ (ไม่ต้องแก้ตรงนี้) ---
+
 function renderPosts() {
-    const mainElement = document.querySelector('main'); // หาจุดวางในหน้าเว็บ
+    const mainElement = document.querySelector('main'); 
     
-    // สร้างพื้นที่สำหรับโพสต์
     const postSection = document.createElement('section');
     postSection.innerHTML = `
         <h2 style="text-align: center; margin: 40px 0 20px; font-weight: 600; color: #FFB6C1;">กิจกรรมและอัปเดต</h2>
