@@ -228,7 +228,7 @@
         if (diff >= 0 && diff <= 450) { // อยู่ในเวลาเรียน (ประมาณ 7 คาบ)
             const position = diff * pixelsPerMinute;
             document.getElementById('time-indicator').style.left = position + "px";
-            document.getElementById('status-card').innerHTML = `<h3>🚀 กำลังอยู่ในการเรียนการสอน</h3><p>ใช้พลังงานให้เต็มที่นะ 410!</p>`;
+            document.getElementById('status-card').innerHTML = `<h3>📚 กำลังอยู่ในการเรียนการสอน</h3><p> 410!กำลังเรียน </p>`;
         } else {
             document.getElementById('time-indicator').style.display = "none";
         }
