@@ -19,15 +19,16 @@
         body {
             font-family: 'Kanit', sans-serif;
             background: var(--bg-body);
-            padding: 20px;
+            padding: 15px;
             color: #2d3436;
+            margin: 0;
         }
 
-        .container { max-width: 800px; margin: 0 auto; }
+        .container { max-width: 900px; margin: 0 auto; }
 
-        .header { text-align: center; margin-bottom: 30px; }
+        .header { text-align: center; margin-bottom: 20px; }
+        #current-clock { font-weight: 600; color: var(--nps-blue); font-size: 1.1rem; }
         
-        /* Timeline Wrapper */
         .timeline-container {
             position: relative;
             background: white;
@@ -48,15 +49,15 @@
             gap: 10px;
         }
 
-        /* The Power Bar */
         .power-bar {
             display: flex;
-            height: 60px;
+            height: 85px; /* เพิ่มความสูงเพื่อให้เห็นข้อมูลครบ */
             background: #eee;
-            border-radius: 15px;
-            overflow: hidden;
+            border-radius: 20px;
+            overflow: visible; /* ให้รูปด้านบนไม่โดนตัด */
             position: relative;
-            min-width: 900px; /* คาบละ 100px โดยประมาณ */
+            min-width: 910px; 
+            margin-top: 25px;
         }
 
         .period {
@@ -66,43 +67,41 @@
             justify-content: center;
             align-items: center;
             color: white;
-            font-size: 12px;
             border-right: 1px solid rgba(255,255,255,0.2);
             transition: 0.3s;
-            cursor: pointer;
             position: relative;
         }
 
-        .period b { font-size: 14px; }
-        .period span { font-size: 10px; opacity: 0.8; }
+        .period b { font-size: 16px; margin-bottom: 2px; }
+        .period .info { font-size: 10px; opacity: 0.9; text-align: center; line-height: 1.2; }
+        .period .time { font-size: 9px; margin-top: 4px; background: rgba(0,0,0,0.1); padding: 1px 5px; border-radius: 10px; }
 
-        /* สีแยกตามประเภทวิชา */
         .sci { background: var(--science-color); }
         .math { background: var(--math-color); }
         .soc { background: var(--social-color); }
-        .break { 
-            background: var(--break-color); 
-            color: #d6a000;
-        }
-        .break i { font-size: 20px; animation: bounce 1s infinite; }
+        .break { background: var(--break-color); color: #d6a000; }
 
-        /* Real-time Indicator (ตัวเลื่อน) */
+        /* Indicator: รูปหนังสือ */
         #time-indicator {
             position: absolute;
             top: -10px;
-            height: 80px;
+            height: 105px;
             width: 3px;
             background: #ff4757;
-            z-index: 10;
-            transition: left 0.5s linear;
+            z-index: 100;
+            display: none;
         }
 
         #time-indicator::after {
-            content: '🚀';
+            content: '';
             position: absolute;
-            top: -20px;
-            left: -10px;
-            font-size: 20px;
+            top: -30px;
+            left: -13px;
+            width: 30px;
+            height: 30px;
+            background-image: url('https://cdn-icons-png.flaticon.com/512/3389/3389081.png');
+            background-size: contain;
+            background-repeat: no-repeat;
         }
 
         @keyframes bounce {
@@ -110,14 +109,15 @@
             50% { transform: translateY(-5px); }
         }
 
-        /* Info Card */
-        .current-info {
+        .status-card {
             margin-top: 25px;
-            background: linear-gradient(135deg, var(--nps-pink), var(--nps-blue));
-            color: white;
+            background: white;
+            color: #333;
             padding: 20px;
-            border-radius: 20px;
+            border-radius: 25px;
             text-align: center;
+            border: 2px solid var(--nps-pink);
+            box-shadow: 0 5px 15px rgba(255, 182, 193, 0.2);
         }
     </style>
 </head>
@@ -125,156 +125,138 @@
 
 <div class="container">
     <div class="header">
-        <h1 id="today-name">ตารางเรียนวันนี้</h1>
-        <p id="current-clock">00:00:00</p>
+        <h3 id="current-clock">กำลังโหลดเวลา...</h3>
     </div>
 
     <div class="timeline-container">
         <div class="day-title">
-            <span id="day-icon">📅</span> 
-            <span id="display-day">Loading...</span>
+            <span>📅</span> <span id="display-day">...</span>
         </div>
         
         <div class="power-bar" id="main-bar">
-            <div id="time-indicator"></div>
-        </div>
+            </div>
     </div>
 
-    <div class="current-info" id="status-card">
-        <h3>ขณะนี้: นอกเวลาเรียน</h3>
-        <p>เตรียมตัวสำหรับการเรียนคาบถัดไป</p>
+    <div id="status-card" class="status-card">
+        <h3>ขณะนี้นอกเวลาเรียน</h3>
     </div>
 </div>
 
 <script>
-    // ข้อมูลตารางเรียน ม.4/10 (อ้างอิงจากรูปที่คุณส่งมา)
-        const scheduleData = {
-        1: { // จันทร์
-            name: "วันจันทร์",
-            periods: [
-                { title: "ค31201", room: "ครูอธัญญา | ห้อง 533", type: "math", start: "08:30" },
-                { title: "ส31101", room: "ครูอาภรณ์ | ห้อง 834", type: "soc", start: "09:20" },
-                { title: "ว30288", room: "ครูพุทธพงษ์ | ห้อง 528", type: "sci", start: "10:10" },
-                { title: "ว30288", room: "ครูพุทธพงษ์ | ห้อง 528", type: "sci", start: "11:00" },
-                { title: "พักเที่ยง", room: "RECHARGE TIME", type: "break", start: "11:50", isBreak: true },
-                { title: "ศ31101", room: "ครูชญาดา | ห้อง 612", type: "soc", start: "12:40" },
-                { title: "ว30221", room: "ครูนงนุช | ห้อง 421", type: "sci", start: "13:30" }
-            ]
-        },
-        2: { // อังคาร
-            name: "วันอังคาร",
-            periods: [
-                { title: "ว30201", room: "ครูพรทิพพา | ห้อง 418", type: "sci", start: "08:30" },
-                { title: "ว30201", room: "ครูพรทิพพา | ห้อง 418", type: "sci", start: "09:20" },
-                { title: "ว30241", room: "ครูอรวรรณ | ห้อง 312", type: "sci", start: "10:10" },
-                { title: "ก31901", room: "ครูปริยนนท์ | ห้อง 641", type: "soc", start: "11:00" },
-                { title: "พักเที่ยง", room: "RECHARGE TIME", type: "break", start: "11:50", isBreak: true },
-                { title: "ท31101", room: "ครูนันทนา | ห้อง 628", type: "soc", start: "12:40" },
-                { title: "ค31201", room: "ครูอธัญญา | ห้อง 533", type: "math", start: "13:30" }
-            ]
-        },
-        3: { // พุธ
-            name: "วันพุธ",
-            periods: [
-                { title: "ว30241", room: "ครูอรวรรณ | ห้อง 428", type: "sci", start: "08:30" },
-                { title: "ว30241", room: "ครูอรวรรณ | ห้อง 428", type: "sci", start: "09:20" },
-                { title: "ค31101", room: "ครูพิชชญา | ห้อง 536", type: "math", start: "10:10" },
-                { title: "อ31101", room: "ครูเพ็ญนภา | ห้อง 217", type: "math", start: "11:00" },
-                { title: "พักเที่ยง", room: "RECHARGE TIME", type: "break", start: "11:50", isBreak: true },
-                { title: "ว30211", room: "ครูDaniel | ห้อง 645", type: "sci", start: "12:40" },
-                { title: "พ31101", room: "ครูธิดารัตน์ | สุข1", type: "soc", start: "13:30" }
-            ]
-        },
-        4: { // พฤหัสบดี
-            name: "วันพฤหัสบดี",
-            periods: [
-                { title: "ท31101", room: "ครูนันทนา | ห้อง 628", type: "soc", start: "08:30" },
-                { title: "ส31102", room: "ครูชุติกาญจน์ | ห้อง 821", type: "soc", start: "09:20" },
-                { title: "ว30221", room: "ครูนงนุช | ห้อง 421", type: "sci", start: "10:10" },
-                { title: "ว30221", room: "ครูนงนุช | ห้อง 421", type: "sci", start: "11:00" },
-                { title: "พักเที่ยง", room: "RECHARGE TIME", type: "break", start: "11:50", isBreak: true },
-                { title: "ค31201", room: "ครูอธัญญา | ห้อง 533", type: "math", start: "12:40" },
-                { title: "ชุมนุม", room: "กิจกรรม | สนาม", type: "soc", start: "13:30" }
-            ]
-        },
-        5: { // ศุกร์
-            name: "วันศุกร์",
-            periods: [
-                { title: "อ31101", room: "ครูเพ็ญนภา | ห้อง 217", type: "math", start: "08:30" },
-                { title: "ค31101", room: "ครูพิชชญา | ห้อง 536", type: "math", start: "09:20" },
-                { title: "ว31102", room: "ครูสุกัญญา | ห้อง 524", type: "sci", start: "10:10" },
-                { title: "ส31101", room: "ครูอาภรณ์ | ห้อง 834", type: "soc", start: "11:00" },
-                { title: "พักเที่ยง", room: "RECHARGE TIME", type: "break", start: "11:50", isBreak: true },
-                { title: "ว30201", room: "ครูพรทิพพา | ห้อง 418", type: "sci", start: "12:40" },
-                { title: "โฮมรูม", room: "ครูที่ปรึกษา | ห้อง 410", type: "soc", start: "13:30" }
-            ]
-        }
+    const scheduleData = {
+        1: { name: "วันจันทร์", periods: [
+            { title: "ค31201", room: "ครูอธัญญา | ห้อง 533", type: "math", start: "08:30" },
+            { title: "ส31101", room: "ครูอาภรณ์ | ห้อง 834", type: "soc", start: "09:20" },
+            { title: "ว30288", room: "ครูพุทธพงษ์ | ห้อง 528", type: "sci", start: "10:10" },
+            { title: "ว30288", room: "ครูพุทธพงษ์ | ห้อง 528", type: "sci", start: "11:00" },
+            { title: "พักเที่ยง", room: "RECHARGE", type: "break", start: "11:50", isBreak: true },
+            { title: "ศ31101", room: "ครูชญาดา | ห้อง 612", type: "soc", start: "12:40" },
+            { title: "ว30221", room: "ครูนงนุช | ห้อง 421", type: "sci", start: "13:30" }
+        ]},
+        2: { name: "วันอังคาร", periods: [
+            { title: "ว30201", room: "ครูพรทิพพา | ห้อง 418", type: "sci", start: "08:30" },
+            { title: "ว30201", room: "ครูพรทิพพา | ห้อง 418", type: "sci", start: "09:20" },
+            { title: "ว30241", room: "ครูอรวรรณ | ห้อง 312", type: "sci", start: "10:10" },
+            { title: "ก31901", room: "ครูปริยนนท์ | ห้อง 641", type: "soc", start: "11:00" },
+            { title: "พักเที่ยง", room: "RECHARGE", type: "break", start: "11:50", isBreak: true },
+            { title: "ท31101", room: "ครูนันทนา | ห้อง 628", type: "soc", start: "12:40" },
+            { title: "ค31201", room: "ครูอธัญญา | ห้อง 533", type: "math", start: "13:30" }
+        ]},
+        3: { name: "วันพุธ", periods: [
+            { title: "ว30241", room: "ครูอรวรรณ | ห้อง 428", type: "sci", start: "08:30" },
+            { title: "ว30241", room: "ครูอรวรรณ | ห้อง 428", type: "sci", start: "09:20" },
+            { title: "ค31101", room: "ครูพิชชญา | ห้อง 536", type: "math", start: "10:10" },
+            { title: "อ31101", room: "ครูเพ็ญนภา | ห้อง 217", type: "math", start: "11:00" },
+            { title: "พักเที่ยง", room: "RECHARGE", type: "break", start: "11:50", isBreak: true },
+            { title: "ว30211", room: "ครูDaniel | ห้อง 645", type: "sci", start: "12:40" },
+            { title: "พ31101", room: "ครูธิดารัตน์ | สุข1", type: "soc", start: "13:30" }
+        ]},
+        4: { name: "วันพฤหัสบดี", periods: [
+            { title: "ท31101", room: "ครูนันทนา | ห้อง 628", type: "soc", start: "08:30" },
+            { title: "ส31102", room: "ครูชุติกาญจน์ | ห้อง 821", type: "soc", start: "09:20" },
+            { title: "ว30221", room: "ครูนงนุช | ห้อง 421", type: "sci", start: "10:10" },
+            { title: "ว30221", room: "ครูนงนุช | ห้อง 421", type: "sci", start: "11:00" },
+            { title: "พักเที่ยง", room: "RECHARGE", type: "break", start: "11:50", isBreak: true },
+            { title: "ค31201", room: "ครูอธัญญา | ห้อง 533", type: "math", start: "12:40" },
+            { title: "ชุมนุม", room: "กิจกรรม | สนาม", type: "soc", start: "13:30" }
+        ]},
+        5: { name: "วันศุกร์", periods: [
+            { title: "อ31101", room: "ครูเพ็ญนภา | ห้อง 217", type: "math", start: "08:30" },
+            { title: "ค31101", room: "ครูพิชชญา | ห้อง 536", type: "math", start: "09:20" },
+            { title: "ว31102", room: "ครูสุกัญญา | ห้อง 524", type: "sci", start: "10:10" },
+            { title: "ส31101", room: "ครูอาภรณ์ | ห้อง 834", type: "soc", start: "11:00" },
+            { title: "พักเที่ยง", room: "RECHARGE", type: "break", start: "11:50", isBreak: true },
+            { title: "ว30201", room: "ครูพรทิพพา | ห้อง 418", type: "sci", start: "12:40" },
+            { title: "โฮมรูม", room: "ครูที่ปรึกษา | ห้อง 410", type: "soc", start: "13:30" }
+        ]}
     };
 
-    };
+    let lastRenderedDay = -1;
 
     function updateClock() {
         const now = new Date();
-        const timeStr = now.toLocaleTimeString('th-TH');
-        document.getElementById('current-clock').innerText = timeStr;
+        const options = { timeZone: 'Asia/Bangkok', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+        document.getElementById('current-clock').innerText = "เวลาปัจจุบัน: " + new Intl.DateTimeFormat('th-TH', options).format(now) + " น.";
 
-        const day = now.getDay(); // 0 = อาทิตย์, 1 = จันทร์...
-        const currentSchedule = scheduleData[day];
-
-        if (currentSchedule) {
-            document.getElementById('display-day').innerText = currentSchedule.name;
-            renderTimeline(currentSchedule.periods);
-            moveIndicator(now);
-        } else {
-            document.getElementById('display-day').innerText = "วันหยุดพักผ่อน";
-            document.getElementById('main-bar').innerHTML = "<div style='padding:20px; color:#999'>ไม่มีตารางเรียนในวันนี้</div>";
+        const day = now.getDay();
+        if (day !== lastRenderedDay) {
+            const currentSchedule = scheduleData[day];
+            if (currentSchedule) {
+                document.getElementById('display-day').innerText = currentSchedule.name;
+                renderTimeline(currentSchedule.periods);
+            } else {
+                document.getElementById('display-day').innerText = "วันหยุดพักผ่อน";
+                document.getElementById('main-bar').innerHTML = "<div style='padding:20px; color:#999'>ไม่มีตารางเรียนในวันนี้</div>";
+            }
+            lastRenderedDay = day;
         }
+        moveIndicator(now);
     }
 
     function renderTimeline(periods) {
         const bar = document.getElementById('main-bar');
-        // เก็บ indicator ไว้
-        const indicator = document.getElementById('time-indicator');
-        bar.innerHTML = '';
-        bar.appendChild(indicator);
-
+        bar.innerHTML = '<div id="time-indicator"></div>';
         periods.forEach(p => {
             const div = document.createElement('div');
             div.className = `period ${p.type}`;
-            div.style.width = "130px"; // คาบละ 130px
-            
+            div.style.width = "130px";
             if(p.isBreak) {
-                div.innerHTML = `<i>🍱</i> <b>${p.title}</b> <span>${p.start}</span>`;
+                div.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/3081/3081913.png" style="width:35px; margin-bottom:5px; animation: bounce 1s infinite;"> <b>${p.title}</b> <span class="time">${p.start} น.</span>`;
             } else {
-                div.innerHTML = `<b>${p.title}</b> <span>ห้อง ${p.room}</span> <span>${p.start} น.</span>`;
+                div.innerHTML = `<b>${p.title}</b> <span class="info">${p.room}</span> <span class="time">${p.start} น.</span>`;
             }
             bar.appendChild(div);
         });
     }
 
     function moveIndicator(now) {
-        const startHour = 8;
-        const startMin = 30;
-        const pixelsPerMinute = 130 / 50; // 130px ต่อ 50 นาที
+        const startHour = 8, startMin = 30, pixelsPerMinute = 130 / 50; 
+        const currentMins = (now.getHours() * 60) + now.getMinutes();
+        const scheduleStartMins = (startHour * 60) + startMin;
+        const diff = currentMins - scheduleStartMins;
+        const statusCard = document.getElementById('status-card');
+        const indicator = document.getElementById('time-indicator');
 
-        const currentMinutes = (now.getHours() * 60) + now.getMinutes();
-        const scheduleStartMinutes = (startHour * 60) + startMin;
-
-        const diff = currentMinutes - scheduleStartMinutes;
-
-        if (diff >= 0 && diff <= 450) { // อยู่ในเวลาเรียน (ประมาณ 7 คาบ)
-            const position = diff * pixelsPerMinute;
-            document.getElementById('time-indicator').style.left = position + "px";
-            document.getElementById('status-card').innerHTML = `<h3>📚 กำลังอยู่ในการเรียนการสอน</h3><p> 410!กำลังเรียน </p>`;
+        if (diff >= 0 && diff <= 350) { // 08:30 - 14:20
+            if (indicator) {
+                indicator.style.display = "block";
+                indicator.style.left = (diff * pixelsPerMinute) + "px";
+            }
+            statusCard.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/3389/3389081.png" style="width:30px; margin-bottom:5px;"> <h3>ขณะนี้กำลังอยู่ในเวลาเรียน</h3><p>ตั้งใจเรียนนะชาว 410!</p>`;
         } else {
-            document.getElementById('time-indicator').style.display = "none";
+            if (indicator) indicator.style.display = "none";
+            if (diff > 350 && now.getHours() < 18 && (now.getDay() >= 1 && now.getDay() <= 5)) {
+                statusCard.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/402/402715.png" style="width:40px; margin-bottom:10px;"> <h3>เลิกเรียนแล้ว!</h3><p>กลับบ้านปลอดภัยนะเพื่อนๆ</p>`;
+            } else if (now.getDay() === 0 || now.getDay() === 6) {
+                statusCard.innerHTML = `<h3>😴 วันหยุดพักผ่อน</h3><p>เจอกันวันจันทร์นะจ๊ะ</p>`;
+            } else {
+                statusCard.innerHTML = `<h3>ขณะนี้นอกเวลาเรียน</h3><p>พักผ่อนเตรียมลุยต่อในวันพรุ่งนี้</p>`;
+            }
         }
     }
 
     setInterval(updateClock, 1000);
     updateClock();
 </script>
-
 </body>
 </html>
-
