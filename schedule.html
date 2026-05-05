@@ -148,32 +148,69 @@
 
 <script>
     // ข้อมูลตารางเรียน ม.4/10 (อ้างอิงจากรูปที่คุณส่งมา)
-    const scheduleData = {
+        const scheduleData = {
         1: { // จันทร์
             name: "วันจันทร์",
             periods: [
-                { title: "คณิต", room: "533", type: "math", start: "08:30" },
-                { title: "สังคม", room: "834", type: "soc", start: "09:20" },
-                { title: "ฟิสิกส์", room: "528", type: "sci", start: "10:10" },
-                { title: "ฟิสิกส์", room: "528", type: "sci", start: "11:00" },
-                { title: "พักเที่ยง", room: "โรงอาหาร", type: "break", start: "11:50", isBreak: true },
-                { title: "ศิลปะ", room: "612", type: "soc", start: "12:40" },
-                { title: "เคมี", room: "421", type: "sci", start: "13:30" }
+                { title: "ค31201", room: "ครูอธัญญา | ห้อง 533", type: "math", start: "08:30" },
+                { title: "ส31101", room: "ครูอาภรณ์ | ห้อง 834", type: "soc", start: "09:20" },
+                { title: "ว30288", room: "ครูพุทธพงษ์ | ห้อง 528", type: "sci", start: "10:10" },
+                { title: "ว30288", room: "ครูพุทธพงษ์ | ห้อง 528", type: "sci", start: "11:00" },
+                { title: "พักเที่ยง", room: "RECHARGE TIME", type: "break", start: "11:50", isBreak: true },
+                { title: "ศ31101", room: "ครูชญาดา | ห้อง 612", type: "soc", start: "12:40" },
+                { title: "ว30221", room: "ครูนงนุช | ห้อง 421", type: "sci", start: "13:30" }
             ]
         },
         2: { // อังคาร
             name: "วันอังคาร",
             periods: [
-                { title: "ฟิสิกส์", room: "418", type: "sci", start: "08:30" },
-                { title: "ฟิสิกส์", room: "418", type: "sci", start: "09:20" },
-                { title: "ชีวะ", room: "312", type: "sci", start: "10:10" },
-                { title: "กแนะแนว", room: "641", type: "soc", start: "11:00" },
-                { title: "พักเที่ยง", room: "", type: "break", start: "11:50", isBreak: true },
-                { title: "ไทย", room: "628", type: "soc", start: "12:40" },
-                { title: "คณิต", room: "533", type: "math", start: "13:30" }
+                { title: "ว30201", room: "ครูพรทิพพา | ห้อง 418", type: "sci", start: "08:30" },
+                { title: "ว30201", room: "ครูพรทิพพา | ห้อง 418", type: "sci", start: "09:20" },
+                { title: "ว30241", room: "ครูอรวรรณ | ห้อง 312", type: "sci", start: "10:10" },
+                { title: "ก31901", room: "ครูปริยนนท์ | ห้อง 641", type: "soc", start: "11:00" },
+                { title: "พักเที่ยง", room: "RECHARGE TIME", type: "break", start: "11:50", isBreak: true },
+                { title: "ท31101", room: "ครูนันทนา | ห้อง 628", type: "soc", start: "12:40" },
+                { title: "ค31201", room: "ครูอธัญญา | ห้อง 533", type: "math", start: "13:30" }
+            ]
+        },
+        3: { // พุธ
+            name: "วันพุธ",
+            periods: [
+                { title: "ว30241", room: "ครูอรวรรณ | ห้อง 428", type: "sci", start: "08:30" },
+                { title: "ว30241", room: "ครูอรวรรณ | ห้อง 428", type: "sci", start: "09:20" },
+                { title: "ค31101", room: "ครูพิชชญา | ห้อง 536", type: "math", start: "10:10" },
+                { title: "อ31101", room: "ครูเพ็ญนภา | ห้อง 217", type: "math", start: "11:00" },
+                { title: "พักเที่ยง", room: "RECHARGE TIME", type: "break", start: "11:50", isBreak: true },
+                { title: "ว30211", room: "ครูDaniel | ห้อง 645", type: "sci", start: "12:40" },
+                { title: "พ31101", room: "ครูธิดารัตน์ | สุข1", type: "soc", start: "13:30" }
+            ]
+        },
+        4: { // พฤหัสบดี
+            name: "วันพฤหัสบดี",
+            periods: [
+                { title: "ท31101", room: "ครูนันทนา | ห้อง 628", type: "soc", start: "08:30" },
+                { title: "ส31102", room: "ครูชุติกาญจน์ | ห้อง 821", type: "soc", start: "09:20" },
+                { title: "ว30221", room: "ครูนงนุช | ห้อง 421", type: "sci", start: "10:10" },
+                { title: "ว30221", room: "ครูนงนุช | ห้อง 421", type: "sci", start: "11:00" },
+                { title: "พักเที่ยง", room: "RECHARGE TIME", type: "break", start: "11:50", isBreak: true },
+                { title: "ค31201", room: "ครูอธัญญา | ห้อง 533", type: "math", start: "12:40" },
+                { title: "ชุมนุม", room: "กิจกรรม | สนาม", type: "soc", start: "13:30" }
+            ]
+        },
+        5: { // ศุกร์
+            name: "วันศุกร์",
+            periods: [
+                { title: "อ31101", room: "ครูเพ็ญนภา | ห้อง 217", type: "math", start: "08:30" },
+                { title: "ค31101", room: "ครูพิชชญา | ห้อง 536", type: "math", start: "09:20" },
+                { title: "ว31102", room: "ครูสุกัญญา | ห้อง 524", type: "sci", start: "10:10" },
+                { title: "ส31101", room: "ครูอาภรณ์ | ห้อง 834", type: "soc", start: "11:00" },
+                { title: "พักเที่ยง", room: "RECHARGE TIME", type: "break", start: "11:50", isBreak: true },
+                { title: "ว30201", room: "ครูพรทิพพา | ห้อง 418", type: "sci", start: "12:40" },
+                { title: "โฮมรูม", room: "ครูที่ปรึกษา | ห้อง 410", type: "soc", start: "13:30" }
             ]
         }
-        // คุณสามารถเพิ่มวันพุธ-ศุกร์ต่อได้ตามแพทเทิร์นนี้เลยครับ
+    };
+
     };
 
     function updateClock() {
