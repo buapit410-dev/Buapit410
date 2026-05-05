@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>410 Timeline Schedule</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --nps-pink: #FFB6C1;
+            --nps-blue: #87CEFA;
+            --science-color: #ff7675;
+            --math-color: #74b9ff;
+            --social-color: #55efc4;
+            --break-color: #ffeaa7;
+            --bg-body: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Kanit', sans-serif;
+            background: var(--bg-body);
+            padding: 20px;
+            color: #2d3436;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        
+        /* Timeline Wrapper */
+        .timeline-container {
+            position: relative;
+            background: white;
+            padding: 20px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .day-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--nps-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* The Power Bar */
+        .power-bar {
+            display: flex;
+            height: 60px;
+            background: #eee;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            min-width: 900px; /* คาบละ 100px โดยประมาณ */
+        }
+
+        .period {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 12px;
+            border-right: 1px solid rgba(255,255,255,0.2);
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .period b { font-size: 14px; }
+        .period span { font-size: 10px; opacity: 0.8; }
+
+        /* สีแยกตามประเภทวิชา */
+        .sci { background: var(--science-color); }
+        .math { background: var(--math-color); }
+        .soc { background: var(--social-color); }
+        .break { 
+            background: var(--break-color); 
+            color: #d6a000;
+        }
+        .break i { font-size: 20px; animation: bounce 1s infinite; }
+
+        /* Real-time Indicator (ตัวเลื่อน) */
+        #time-indicator {
+            position: absolute;
+            top: -10px;
+            height: 80px;
+            width: 3px;
+            background: #ff4757;
+            z-index: 10;
+            transition: left 0.5s linear;
+        }
+
+        #time-indicator::after {
+            content: '🚀';
+            position: absolute;
+            top: -20px;
+            left: -10px;
+            font-size: 20px;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Info Card */
+        .current-info {
+            margin-top: 25px;
+            background: linear-gradient(135deg, var(--nps-pink), var(--nps-blue));
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1 id="today-name">ตารางเรียนวันนี้</h1>
+        <p id="current-clock">00:00:00</p>
+    </div>
+
+    <div class="timeline-container">
+        <div class="day-title">
+            <span id="day-icon">📅</span> 
+            <span id="display-day">Loading...</span>
+        </div>
+        
+        <div class="power-bar" id="main-bar">
+            <div id="time-indicator"></div>
+        </div>
+    </div>
+
+    <div class="current-info" id="status-card">
+        <h3>ขณะนี้: นอกเวลาเรียน</h3>
+        <p>เตรียมตัวสำหรับการเรียนคาบถัดไป</p>
+    </div>
+</div>
+
+<script>
+    // ข้อมูลตารางเรียน ม.4/10 (อ้างอิงจากรูปที่คุณส่งมา)
+    const scheduleData = {
+        1: { // จันทร์
+            name: "วันจันทร์",
+            periods: [
+                { title: "คณิต", room: "533", type: "math", start: "08:30" },
+                { title: "สังคม", room: "834", type: "soc", start: "09:20" },
+                { title: "ฟิสิกส์", room: "528", type: "sci", start: "10:10" },
+                { title: "ฟิสิกส์", room: "528", type: "sci", start: "11:00" },
+                { title: "พักเที่ยง", room: "โรงอาหาร", type: "break", start: "11:50", isBreak: true },
+                { title: "ศิลปะ", room: "612", type: "soc", start: "12:40" },
+                { title: "เคมี", room: "421", type: "sci", start: "13:30" }
+            ]
+        },
+        2: { // อังคาร
+            name: "วันอังคาร",
+            periods: [
+                { title: "ฟิสิกส์", room: "418", type: "sci", start: "08:30" },
+                { title: "ฟิสิกส์", room: "418", type: "sci", start: "09:20" },
+                { title: "ชีวะ", room: "312", type: "sci", start: "10:10" },
+                { title: "กแนะแนว", room: "641", type: "soc", start: "11:00" },
+                { title: "พักเที่ยง", room: "", type: "break", start: "11:50", isBreak: true },
+                { title: "ไทย", room: "628", type: "soc", start: "12:40" },
+                { title: "คณิต", room: "533", type: "math", start: "13:30" }
+            ]
+        }
+        // คุณสามารถเพิ่มวันพุธ-ศุกร์ต่อได้ตามแพทเทิร์นนี้เลยครับ
+    };
+
+    function updateClock() {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('th-TH');
+        document.getElementById('current-clock').innerText = timeStr;
+
+        const day = now.getDay(); // 0 = อาทิตย์, 1 = จันทร์...
+        const currentSchedule = scheduleData[day];
+
+        if (currentSchedule) {
+            document.getElementById('display-day').innerText = currentSchedule.name;
+            renderTimeline(currentSchedule.periods);
+            moveIndicator(now);
+        } else {
+            document.getElementById('display-day').innerText = "วันหยุดพักผ่อน";
+            document.getElementById('main-bar').innerHTML = "<div style='padding:20px; color:#999'>ไม่มีตารางเรียนในวันนี้</div>";
+        }
+    }
+
+    function renderTimeline(periods) {
+        const bar = document.getElementById('main-bar');
+        // เก็บ indicator ไว้
+        const indicator = document.getElementById('time-indicator');
+        bar.innerHTML = '';
+        bar.appendChild(indicator);
+
+        periods.forEach(p => {
+            const div = document.createElement('div');
+            div.className = `period ${p.type}`;
+            div.style.width = "130px"; // คาบละ 130px
+            
+            if(p.isBreak) {
+                div.innerHTML = `<i>🍱</i> <b>${p.title}</b> <span>${p.start}</span>`;
+            } else {
+                div.innerHTML = `<b>${p.title}</b> <span>ห้อง ${p.room}</span> <span>${p.start} น.</span>`;
+            }
+            bar.appendChild(div);
+        });
+    }
+
+    function moveIndicator(now) {
+        const startHour = 8;
+        const startMin = 30;
+        const pixelsPerMinute = 130 / 50; // 130px ต่อ 50 นาที
+
+        const currentMinutes = (now.getHours() * 60) + now.getMinutes();
+        const scheduleStartMinutes = (startHour * 60) + startMin;
+
+        const diff = currentMinutes - scheduleStartMinutes;
+
+        if (diff >= 0 && diff <= 450) { // อยู่ในเวลาเรียน (ประมาณ 7 คาบ)
+            const position = diff * pixelsPerMinute;
+            document.getElementById('time-indicator').style.left = position + "px";
+            document.getElementById('status-card').innerHTML = `<h3>🚀 กำลังอยู่ในการเรียนการสอน</h3><p>ใช้พลังงานให้เต็มที่นะ 410!</p>`;
+        } else {
+            document.getElementById('time-indicator').style.display = "none";
+        }
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>
+
+</body>
+</html>
+
